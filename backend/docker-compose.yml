@@ -1,0 +1,50 @@
+# Dockercompose with springboot image and sql
+version: '3'
+networks:
+  springnet:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
+
+services:
+  springboot:
+    image: sjng1234/booking-management-backend
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - springnet
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DBL=oop_users
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - SECRET_KEY=secretwqblwbrlkrjbwlbrwlqbjrljqbwrlbjqwlrbqlwrb
+      - HASH_SECRET=secretwqblwbrlkrjbwlbrwlqbjrljqbwrlbjqwlrbqlwrb
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    networks:
+      - springnet
+    # ports:
+    #   - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: oop_users
+      MYSQL_USER: oop_user
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+# Dockercompose command line
+# docker-compose up --build
